@@ -1,44 +1,30 @@
+    async function getData() {
+    let url = 'https://raw.githubusercontent.com/ailioski-linkplusit/assignment-dictionary/master/dictionary.txt';
+    const response = await fetch(url);
+    const data = await response.text();
 
-getData();
+    const anagrams = data.split('\n');
+    return anagrams;
+}
 
-function getData(){
-    let url = 'https://raw.githubusercontent.com/riste238/data-arr/main/data.json';
-    return new Promise(function(resolve, reject){
-        let xml = new XMLHttpRequest();
-        xml.open('GET',url);
-        xml.onreadystatechange = function(){
-            if(xml.readyState === 4 && xml.status === 200){
-              displayData(JSON.parse(xml.responseText));
-            }
-        }
-        xml.send();
+let groupAnagrams = function(anagrams){
+    let hash = {};
+
+    anagrams.forEach(str => {
+        let letters = str.split('').sort();
+
+        hash[letters] ? hash[letters].push(str) : hash[letters] = [str];
     })
-    
-}
 
-// let stars;
-function displayData(data){
-    console.log(data);
-    let podatoci; // inside in fun
-    for (const value in data) {
-    //     podatoci=  Object.values(value).filter(el => {
-    //     return el !== null;   
-    // });
-    podatoci = Array.from(data[value]).filter(el=> {
-        return el !== null;
+    const keys = Object.keys(hash);
+    const values = keys.map(function(v){
+        return hash[v];
     });
-    // podatoci.split('');
-    
-    }
-    
-
-    // const result = stars.filter(element => {
-    //     return element !== null;
-    // })
-    // console.log(result);
-//   stars.push(Object.values(data));
+    return values;
 }
-// let stars = ["cat", "dog", "tac", "god", "act"];
 
-let stars =  displayData();
-console.log(stars[0]);
+getData()
+    .then(response => {
+        const result = groupAnagrams(response);
+        console.log(result);
+    });
